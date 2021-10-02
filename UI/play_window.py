@@ -4,11 +4,12 @@ import keyboard
 letter_of_index = 0
 
 
-def initialize_play_window():
+def initialize_play_window(typing_file, welcome_window):
+    welcome_window.destroy()
     play_window = Tk()
     define_window_style(play_window)
-    list_of_letter_labels = add_text_for_typing(play_window)
-    config_typing_actions(play_window, list_of_letter_labels)
+    list_of_letter_labels = add_text_for_typing(play_window, typing_file)
+    config_typing_actions(play_window, list_of_letter_labels, typing_file)
     play_window.mainloop()
 
 
@@ -21,10 +22,10 @@ def define_window_style(play_window):
     Label(play_window, text="Type!", bg="light blue", font=("Helvetica", 30)).place(x=440, y=0)
 
 
-def config_typing_actions(play_window, list_of_letter_labels):
+def config_typing_actions(play_window, list_of_letter_labels, typing_file):
     play_window.bind("<KeyPress-Shift_L>", lambda event: analyze_shift_press(event, list_of_letter_labels))
     play_window.bind("<KeyPress-Shift_R>", lambda event: analyze_shift_press(event, list_of_letter_labels))
-    play_window.bind("<Key>", lambda event: analyze_key_press(event, list_of_letter_labels))
+    play_window.bind("<Key>", lambda event: analyze_key_press(event, list_of_letter_labels, play_window, typing_file))
 
 
 def analyze_shift_press(event, letter_labels):
@@ -33,22 +34,37 @@ def analyze_shift_press(event, letter_labels):
             break
 
 
-def analyze_key_press(event, letter_labels):
+def analyze_key_press(event, letter_labels, play_window, typing_file):
     global letter_of_index
     if event.char == letter_labels[letter_of_index].cget("text"):
         letter_labels[letter_of_index]["bg"] = "lawn green"
     else:
         letter_labels[letter_of_index]["bg"] = "tomato"
     letter_of_index += 1
+    if letter_of_index == len(letter_labels):
+        set_next_text(letter_labels, play_window, typing_file)
 
 
-def add_text_for_typing(play_window):
+def set_next_text(letter_labels, play_window, typing_file):
+    for label in letter_labels:
+        label.destroy()
+    global letter_of_index
+    list_of_letter_labels = add_text_for_typing(play_window, typing_file)
+    config_typing_actions(play_window, list_of_letter_labels, typing_file)
+    letter_of_index = 0
+
+
+def add_text_for_typing(play_window, typing_file):
     frame = Frame(play_window, width=950, height=430, bg="light blue")
     frame.grid(row=1, column=0)
-    text = "Hello my name is Eldar, and this is my typing game. I hope you enjoy it."
+    # text = "Hello my name is Eldar, and this is my typing game. I hope you enjoy it."
+    text = typing_file.get_next_piece_of_text()
     list_of_letter_labels = []
     for letter in text:
-        label_of_letter = Label(frame, text=letter, bg=play_window["bg"], font=("Helvetica", 18))
+        if letter != chr(10):
+            label_of_letter = Label(frame, text=letter, bg=play_window["bg"], font=("Helvetica", 18))
+        else:
+            label_of_letter = Label(frame, text=" ", bg=play_window["bg"], font=("Helvetica", 18))
         list_of_letter_labels.append(label_of_letter)
     current_column = 0
     current_row = 1
