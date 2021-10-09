@@ -10,7 +10,7 @@ letter_of_index = 0
 
 # entry point
 def start_game():
-    # UI.login.create_login_window()
+    UI.login.create_login_window()
     welcome_window = Tk()
     define_window_style(welcome_window)
     add_pick_file_widgets(welcome_window)

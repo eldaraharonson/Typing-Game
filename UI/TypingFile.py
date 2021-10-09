@@ -10,6 +10,6 @@ class TypingFile:
 
     def get_next_piece_of_text(self):
         text = ""
-        for i in range(5):
-            text += self.file_object.readline()
+        for i in range(300):
+            text += self.file_object.read(1)
         return text

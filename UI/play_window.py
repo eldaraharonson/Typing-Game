@@ -56,7 +56,7 @@ def set_next_text(letter_labels, play_window, typing_file):
 
 def add_text_for_typing(play_window, typing_file):
     frame = Frame(play_window, width=950, height=430, bg="light blue")
-    frame.grid(row=1, column=0)
+    frame.grid(row=2, column=2)
     # text = "Hello my name is Eldar, and this is my typing game. I hope you enjoy it."
     text = typing_file.get_next_piece_of_text()
     list_of_letter_labels = []
